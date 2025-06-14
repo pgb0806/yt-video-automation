@@ -1,22 +1,23 @@
-const fs = require('fs');
 const puppeteer = require('puppeteer');
+const fs = require('fs');
 
 (async () => {
-  // Read the template
-  let template = fs.readFileSync('template.html', 'utf8');
+  const browser = await puppeteer.launch({
+    args: ['--no-sandbox', '--disable-setuid-sandbox']
+  });
 
-  // Replace placeholders
-  const quote = process.env.QUOTE || "Your default quote here";
-  const author = process.env.AUTHOR || "Anonymous";
-  template = template.replace('{{QUOTE}}', quote).replace('{{AUTHOR}}', author);
-
-  // Save dynamic HTML
-  fs.writeFileSync('output.html', template);
-
-  // Render with Puppeteer
-  const browser = await puppeteer.launch();
   const page = await browser.newPage();
-  await page.goto(`file://${process.cwd()}/output.html`);
-  await page.screenshot({ path: 'frame.png', fullPage: true });
+
+  // Load template
+  let html = fs.readFileSync('template.html', 'utf8');
+  html = html.replace('{{QUOTE}}', process.env.QUOTE);
+  html = html.replace('{{AUTHOR}}', process.env.AUTHOR);
+
+  await page.setContent(html, { waitUntil: 'networkidle0' });
+
+  await page.setViewport({ width: 1280, height: 720 });
+
+  await page.screenshot({ path: 'frame.png' });
+
   await browser.close();
 })();

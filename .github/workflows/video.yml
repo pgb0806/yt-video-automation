@@ -20,7 +20,7 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y ffmpeg
-        npm install puppeteer
+        npm ci
 
     - name: Set env from dispatch payload
       run: |
@@ -28,13 +28,13 @@ jobs:
         echo "AUTHOR=${{ github.event.client_payload.author }}" >> $GITHUB_ENV
 
     - name: Render HTML to PNG
-      run: node render.js
+      run: npm run render
 
     - name: Convert PNG to MP4
       run: ffmpeg -loop 1 -i frame.png -c:v libx264 -t 10 -pix_fmt yuv420p output.mp4
 
     - name: Upload Video Artifact
-      uses: actions/upload-artifact@v4   # ✅ upgraded
+      uses: actions/upload-artifact@v4
       with:
         name: video
         path: output.mp4
