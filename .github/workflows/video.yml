@@ -7,15 +7,16 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     env:
-      QUOTE: "Whatever you want"   # default, will be overridden by payload
+      QUOTE: "Whatever you want"   # default, overridden by payload
       AUTHOR: "Krishna"
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v4   # ✅ upgraded
 
-    - name: Install Node + Puppeteer
+    - name: Install dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y ffmpeg
@@ -33,7 +34,7 @@ jobs:
       run: ffmpeg -loop 1 -i frame.png -c:v libx264 -t 10 -pix_fmt yuv420p output.mp4
 
     - name: Upload Video Artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4   # ✅ upgraded
       with:
         name: video
         path: output.mp4
