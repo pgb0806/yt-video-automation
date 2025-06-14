@@ -9,18 +9,18 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      QUOTE: "Whatever you want"   # default, overridden by payload
+      QUOTE: "Whatever you want"
       AUTHOR: "Krishna"
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4   # ✅ upgraded
+      uses: actions/checkout@v4
 
     - name: Install dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y ffmpeg
-        npm ci
+        npm install  # ⚡ use install instead of ci
 
     - name: Set env from dispatch payload
       run: |
